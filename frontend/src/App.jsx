@@ -12,6 +12,7 @@ import RightPanel from "./components/common/RightPanel";
 import { Toaster } from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "./components/common/LoadingSpinner";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
 	const { data: authUser, isLoading } = useQuery({
@@ -36,26 +37,52 @@ function App() {
 
 	if (isLoading) {
 		return (
-			<div className='h-screen flex justify-center items-center'>
-				<LoadingSpinner size='lg' />
-			</div>
+			<ThemeProvider>
+				<div className='h-screen flex justify-center items-center bg-background-primary'>
+					<LoadingSpinner size='lg' />
+				</div>
+			</ThemeProvider>
 		);
 	}
 
 	return (
-		<div className='flex max-w-6xl mx-auto'>
-			{/* Common component, bc it's not wrapped with Routes */}
-			{authUser && <Sidebar />}
-			<Routes>
-				<Route path='/' element={authUser ? <HomePage /> : <Navigate to='/login' />} />
-				<Route path='/login' element={!authUser ? <LoginPage /> : <Navigate to='/' />} />
-				<Route path='/signup' element={!authUser ? <SignUpPage /> : <Navigate to='/' />} />
-				<Route path='/notifications' element={authUser ? <NotificationPage /> : <Navigate to='/login' />} />
-				<Route path='/profile/:username' element={authUser ? <ProfilePage /> : <Navigate to='/login' />} />
-			</Routes>
-			{authUser && <RightPanel />}
-			<Toaster />
-		</div>
+		<ThemeProvider>
+			<div className='flex max-w-6xl mx-auto bg-background-primary min-h-screen'>
+				{/* Common component, bc it's not wrapped with Routes */}
+				{authUser && <Sidebar />}
+				<Routes>
+					<Route path='/' element={authUser ? <HomePage /> : <Navigate to='/login' />} />
+					<Route path='/login' element={!authUser ? <LoginPage /> : <Navigate to='/' />} />
+					<Route path='/signup' element={!authUser ? <SignUpPage /> : <Navigate to='/' />} />
+					<Route path='/notifications' element={authUser ? <NotificationPage /> : <Navigate to='/login' />} />
+					<Route path='/profile/:username' element={authUser ? <ProfilePage /> : <Navigate to='/login' />} />
+				</Routes>
+				{authUser && <RightPanel />}
+				<Toaster 
+					position="top-right"
+					toastOptions={{
+						duration: 3000,
+						style: {
+							background: 'var(--bg-card)',
+							color: 'var(--text-primary)',
+							border: '1px solid var(--border-primary)',
+						},
+						success: {
+							style: {
+								background: 'var(--success)',
+								color: 'white',
+							},
+						},
+						error: {
+							style: {
+								background: 'var(--error)',
+								color: 'white',
+							},
+						},
+					}}
+				/>
+			</div>
+		</ThemeProvider>
 	);
 }
 

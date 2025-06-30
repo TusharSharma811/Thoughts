@@ -63,46 +63,70 @@ const CreatePost = () => {
 	};
 
 	return (
-		<div className='flex p-4 items-start gap-4 border-b border-gray-700'>
-			<div className='avatar'>
-				<div className='w-8 rounded-full'>
-					<img src={authUser.profileImg || "/avatar-placeholder.png"} />
+		<div className='flex p-6 items-start gap-4 border-b border-border-primary bg-background-card'>
+			<div className='avatar flex-shrink-0'>
+				<div className='w-10 rounded-full border border-border-primary'>
+					<img 
+						src={authUser.profileImg || "/avatar-placeholder.png"} 
+						alt={authUser.fullName}
+						className="w-full h-full object-cover"
+					/>
 				</div>
 			</div>
-			<form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
+			<form className='flex flex-col gap-4 w-full' onSubmit={handleSubmit}>
 				<textarea
-					className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none  border-gray-800'
-					placeholder='What is happening?!'
+					className='w-full p-4 text-lg resize-none border border-border-primary rounded-lg bg-background-secondary text-text-primary placeholder-text-muted focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary focus:ring-opacity-20 transition-all duration-200'
+					placeholder="What's happening?"
 					value={text}
 					onChange={(e) => setText(e.target.value)}
+					rows={3}
 				/>
 				{img && (
-					<div className='relative w-72 mx-auto'>
+					<div className='relative w-full max-w-md mx-auto'>
 						<IoCloseSharp
-							className='absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer'
+							className='absolute top-2 right-2 text-text-inverse bg-background-accent hover:bg-border-accent rounded-full w-6 h-6 p-1 cursor-pointer transition-colors duration-200'
 							onClick={() => {
 								setImg(null);
 								imgRef.current.value = null;
 							}}
 						/>
-						<img src={img} className='w-full mx-auto h-72 object-contain rounded' />
+						<img 
+							src={img} 
+							className='w-full h-72 object-cover rounded-lg border border-border-primary' 
+							alt="Post preview"
+						/>
 					</div>
 				)}
 
-				<div className='flex justify-between border-t py-2 border-t-gray-700'>
-					<div className='flex gap-1 items-center'>
-						<CiImageOn
-							className='fill-primary w-6 h-6 cursor-pointer'
+				<div className='flex justify-between items-center pt-3 border-t border-border-primary'>
+					<div className='flex gap-4 items-center'>
+						<button
+							type="button"
+							className='p-2 rounded-full hover:bg-background-hover transition-colors duration-200'
 							onClick={() => imgRef.current.click()}
-						/>
-						<BsEmojiSmileFill className='fill-primary w-5 h-5 cursor-pointer' />
+						>
+							<CiImageOn className='text-brand-primary w-6 h-6' />
+						</button>
+						<button
+							type="button"
+							className='p-2 rounded-full hover:bg-background-hover transition-colors duration-200'
+						>
+							<BsEmojiSmileFill className='text-brand-primary w-5 h-5' />
+						</button>
 					</div>
 					<input type='file' accept='image/*' hidden ref={imgRef} onChange={handleImgChange} />
-					<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
+					<button 
+						className='py-2 px-6 bg-brand-primary hover:bg-brand-secondary text-text-inverse font-semibold rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed'
+						disabled={isPending || (!text.trim() && !img)}
+					>
 						{isPending ? "Posting..." : "Post"}
 					</button>
 				</div>
-				{isError && <div className='text-red-500'>{error.message}</div>}
+				{isError && (
+					<div className='p-3 bg-status-error bg-opacity-10 border border-status-error rounded-lg'>
+						<p className='text-status-error text-sm font-medium'>{error.message}</p>
+					</div>
+				)}
 			</form>
 		</div>
 	);

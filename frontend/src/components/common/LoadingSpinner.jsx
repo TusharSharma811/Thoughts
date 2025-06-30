@@ -1,6 +1,15 @@
-const LoadingSpinner = ({ size = "md" }) => {
-	const sizeClass = `loading-${size}`;
+const LoadingSpinner = ({ size = "md", className = "" }) => {
+	const sizeClasses = {
+		sm: "w-4 h-4",
+		md: "w-6 h-6", 
+		lg: "w-8 h-8",
+		xl: "w-12 h-12"
+	};
 
-	return <span className={`loading loading-spinner ${sizeClass}`} />;
+	return (
+		<div className={`inline-block ${sizeClasses[size]} ${className}`}>
+			<div className="animate-spin rounded-full border-2 border-border-primary border-t-brand-primary"></div>
+		</div>
+	);
 };
 export default LoadingSpinner;

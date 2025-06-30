@@ -125,96 +125,115 @@ const Post = ({ post }) => {
 
 	return (
 		<>
-			<div className='flex gap-2 items-start p-4 border-b border-gray-700'>
-				<div className='avatar'>
-					<Link to={`/profile/${postOwner.username}`} className='w-8 rounded-full overflow-hidden'>
-						<img src={postOwner.profileImg || "/avatar-placeholder.png"} />
+			<div className='flex gap-4 items-start p-6 border-b border-border-primary bg-background-card hover:bg-background-hover transition-colors duration-200'>
+				<div className='avatar flex-shrink-0'>
+					<Link to={`/profile/${postOwner.username}`} className='w-10 rounded-full overflow-hidden border border-border-primary'>
+						<img 
+							src={postOwner.profileImg || "/avatar-placeholder.png"} 
+							alt={postOwner.fullName}
+							className="w-full h-full object-cover"
+						/>
 					</Link>
 				</div>
-				<div className='flex flex-col flex-1'>
-					<div className='flex gap-2 items-center'>
-						<Link to={`/profile/${postOwner.username}`} className='font-bold'>
+				<div className='flex flex-col flex-1 min-w-0'>
+					<div className='flex gap-2 items-center mb-2'>
+						<Link to={`/profile/${postOwner.username}`} className='font-bold text-text-primary hover:text-brand-primary transition-colors duration-200'>
 							{postOwner.fullName}
 						</Link>
-						<span className='text-gray-700 flex gap-1 text-sm'>
-							<Link to={`/profile/${postOwner.username}`}>@{postOwner.username}</Link>
+						<span className='text-text-muted flex gap-1 text-sm'>
+							<Link to={`/profile/${postOwner.username}`} className="hover:text-brand-primary transition-colors duration-200">
+								@{postOwner.username}
+							</Link>
 							<span>·</span>
 							<span>{formattedDate}</span>
 						</span>
 						{isMyPost && (
 							<span className='flex justify-end flex-1'>
 								{!isDeleting && (
-									<FaTrash className='cursor-pointer hover:text-red-500' onClick={handleDeletePost} />
+									<button
+										className='p-1 rounded-full hover:bg-status-error hover:bg-opacity-10 transition-colors duration-200'
+										onClick={handleDeletePost}
+									>
+										<FaTrash className='w-4 h-4 text-text-muted hover:text-status-error' />
+									</button>
 								)}
-
 								{isDeleting && <LoadingSpinner size='sm' />}
 							</span>
 						)}
 					</div>
 					<div className='flex flex-col gap-3 overflow-hidden'>
-						<span>{post.text}</span>
+						<span className='text-text-primary leading-relaxed'>{post.text}</span>
 						{post.img && (
 							<img
 								src={post.img}
-								className='h-80 object-contain rounded-lg border border-gray-700'
-								alt=''
+								className='max-h-96 w-full object-cover rounded-lg border border-border-primary'
+								alt='Post image'
 							/>
 						)}
 					</div>
-					<div className='flex justify-between mt-3'>
-						<div className='flex gap-4 items-center w-2/3 justify-between'>
+					<div className='flex justify-between mt-4'>
+						<div className='flex gap-6 items-center'>
 							<div
-								className='flex gap-1 items-center cursor-pointer group'
+								className='flex gap-2 items-center cursor-pointer group'
 								onClick={() => document.getElementById("comments_modal" + post._id).showModal()}
 							>
-								<FaRegComment className='w-4 h-4  text-slate-500 group-hover:text-sky-400' />
-								<span className='text-sm text-slate-500 group-hover:text-sky-400'>
+								<div className='p-2 rounded-full group-hover:bg-status-info group-hover:bg-opacity-10 transition-colors duration-200'>
+									<FaRegComment className='w-4 h-4 text-text-muted group-hover:text-status-info' />
+								</div>
+								<span className='text-sm text-text-muted group-hover:text-status-info'>
 									{post.comments.length}
 								</span>
 							</div>
-							{/* We're using Modal Component from DaisyUI */}
-							<dialog id={`comments_modal${post._id}`} className='modal border-none outline-none'>
-								<div className='modal-box rounded border border-gray-600'>
-									<h3 className='font-bold text-lg mb-4'>COMMENTS</h3>
-									<div className='flex flex-col gap-3 max-h-60 overflow-auto'>
+							
+							{/* Modal for comments */}
+							<dialog id={`comments_modal${post._id}`} className='modal'>
+								<div className='modal-box bg-background-card border border-border-primary rounded-lg max-w-lg'>
+									<h3 className='font-bold text-lg mb-4 text-text-primary'>Comments</h3>
+									<div className='flex flex-col gap-4 max-h-60 overflow-auto'>
 										{post.comments.length === 0 && (
-											<p className='text-sm text-slate-500'>
-												No comments yet 🤔 Be the first one 😉
+											<p className='text-sm text-text-muted text-center py-4'>
+												No comments yet 🤔 Be the first one! 😉
 											</p>
 										)}
 										{post.comments.map((comment) => (
-											<div key={comment._id} className='flex gap-2 items-start'>
-												<div className='avatar'>
-													<div className='w-8 rounded-full'>
+											<div key={comment._id} className='flex gap-3 items-start'>
+												<div className='avatar flex-shrink-0'>
+													<div className='w-8 rounded-full border border-border-primary'>
 														<img
 															src={comment.user.profileImg || "/avatar-placeholder.png"}
+															alt={comment.user.fullName}
+															className="w-full h-full object-cover"
 														/>
 													</div>
 												</div>
-												<div className='flex flex-col'>
-													<div className='flex items-center gap-1'>
-														<span className='font-bold'>{comment.user.fullName}</span>
-														<span className='text-gray-700 text-sm'>
+												<div className='flex flex-col flex-1 min-w-0'>
+													<div className='flex items-center gap-2 mb-1'>
+														<span className='font-bold text-text-primary text-sm'>{comment.user.fullName}</span>
+														<span className='text-text-muted text-xs'>
 															@{comment.user.username}
 														</span>
 													</div>
-													<div className='text-sm'>{comment.text}</div>
+													<div className='text-sm text-text-primary'>{comment.text}</div>
 												</div>
 											</div>
 										))}
 									</div>
 									<form
-										className='flex gap-2 items-center mt-4 border-t border-gray-600 pt-2'
+										className='flex gap-3 items-center mt-4 pt-4 border-t border-border-primary'
 										onSubmit={handlePostComment}
 									>
 										<textarea
-											className='textarea w-full p-1 rounded text-md resize-none border focus:outline-none  border-gray-800'
+											className='flex-1 p-3 rounded-lg text-sm resize-none border border-border-primary bg-background-secondary text-text-primary placeholder-text-muted focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary focus:ring-opacity-20 transition-all duration-200'
 											placeholder='Add a comment...'
 											value={comment}
 											onChange={(e) => setComment(e.target.value)}
+											rows={2}
 										/>
-										<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
-											{isCommenting ? <LoadingSpinner size='md' /> : "Post"}
+										<button 
+											className='py-2 px-4 bg-brand-primary hover:bg-brand-secondary text-text-inverse font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-opacity-50 disabled:opacity-50'
+											disabled={isCommenting || !comment.trim()}
+										>
+											{isCommenting ? <LoadingSpinner size='sm' /> : "Post"}
 										</button>
 									</form>
 								</div>
@@ -222,30 +241,37 @@ const Post = ({ post }) => {
 									<button className='outline-none'>close</button>
 								</form>
 							</dialog>
-							<div className='flex gap-1 items-center group cursor-pointer'>
-								<BiRepost className='w-6 h-6  text-slate-500 group-hover:text-green-500' />
-								<span className='text-sm text-slate-500 group-hover:text-green-500'>0</span>
-							</div>
-							<div className='flex gap-1 items-center group cursor-pointer' onClick={handleLikePost}>
-								{isLiking && <LoadingSpinner size='sm' />}
-								{!isLiked && !isLiking && (
-									<FaRegHeart className='w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500' />
-								)}
-								{isLiked && !isLiking && (
-									<FaRegHeart className='w-4 h-4 cursor-pointer text-pink-500 ' />
-								)}
 
+							<div className='flex gap-2 items-center group cursor-pointer'>
+								<div className='p-2 rounded-full group-hover:bg-status-success group-hover:bg-opacity-10 transition-colors duration-200'>
+									<BiRepost className='w-5 h-5 text-text-muted group-hover:text-status-success' />
+								</div>
+								<span className='text-sm text-text-muted group-hover:text-status-success'>0</span>
+							</div>
+
+							<div className='flex gap-2 items-center group cursor-pointer' onClick={handleLikePost}>
+								<div className='p-2 rounded-full group-hover:bg-red-500 group-hover:bg-opacity-10 transition-colors duration-200'>
+									{isLiking && <LoadingSpinner size='sm' />}
+									{!isLiked && !isLiking && (
+										<FaRegHeart className='w-4 h-4 text-text-muted group-hover:text-red-500' />
+									)}
+									{isLiked && !isLiking && (
+										<FaRegHeart className='w-4 h-4 text-red-500' />
+									)}
+								</div>
 								<span
-									className={`text-sm  group-hover:text-pink-500 ${
-										isLiked ? "text-pink-500" : "text-slate-500"
+									className={`text-sm transition-colors duration-200 ${
+										isLiked ? "text-red-500" : "text-text-muted group-hover:text-red-500"
 									}`}
 								>
 									{post.likes.length}
 								</span>
 							</div>
 						</div>
-						<div className='flex w-1/3 justify-end gap-2 items-center'>
-							<FaRegBookmark className='w-4 h-4 text-slate-500 cursor-pointer' />
+						<div className='flex items-center'>
+							<div className='p-2 rounded-full hover:bg-brand-primary hover:bg-opacity-10 transition-colors duration-200'>
+								<FaRegBookmark className='w-4 h-4 text-text-muted hover:text-brand-primary cursor-pointer' />
+							</div>
 						</div>
 					</div>
 				</div>
