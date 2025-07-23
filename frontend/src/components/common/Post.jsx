@@ -186,7 +186,7 @@ const Post = ({ post }) => {
 							</div>
 							
 							{/* Modal for comments */}
-							<dialog id={`comments_modal${post._id}`} className='modal'>
+							<dialog id={`comments_modal${post._id}`} className='modal absolute left-1/2 top-1/2 z-5 bg-background-primary'>
 								<div className='modal-box bg-background-card border border-border-primary rounded-lg max-w-lg'>
 									<h3 className='font-bold text-lg mb-4 text-text-primary'>Comments</h3>
 									<div className='flex flex-col gap-4 max-h-60 overflow-auto'>
